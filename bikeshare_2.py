@@ -1,3 +1,8 @@
+# References Used
+# 1- https://pandas.pydata.org/docs/reference/series.html
+# 2- https://dataindependent.com/pandas/pandas-to-datetime-string-to-date-pd-to_datetime/
+# 3- https://stackoverflow.com/questions/29645153/remove-name-dtype-from-pandas-output-of-dataframe-or-series
+
 import time
 import pandas as pd
 import numpy as np
@@ -73,7 +78,7 @@ def load_data(city, month, day):
 
     # extract month and day of week from Start Time to create new columnons
     df['month'] = df['Start Time'].dt.month
-    df['day_of_week'] = df['Start Time'].dt.strftime("%a")
+    df['day'] = df['Start Time'].dt.strftime("%a")
     
 
     # filter by month if applicable
@@ -86,8 +91,8 @@ def load_data(city, month, day):
 
     # filter by day of week if applicable
     if day != 'all':
-        # filter by day of week to create the new dataframe
-        df = df[df['day_of_week'] == day.title()]
+        # filter by day to create the new dataframe
+        df = df[df['day'] == day.title()]
         
     return df
 
@@ -102,7 +107,7 @@ def time_stats(df):
     print('The Most Common Month is: {}'.format(months[df['month'].mode()[0]-1]))
 
     # display the most common day of week
-    print('The Most Common Day is: {}'.format(df['day_of_week'].mode()[0]))
+    print('The Most Common Day is: {}'.format(df['day'].mode()[0]))
 
     # display the most common start hour
     df['hour'] = df['Start Time'].dt.hour
@@ -120,13 +125,15 @@ def station_stats(df):
     start_time = time.time()
 
     # display most commonly used start station
-
+    print('The Most Commonly Used Start Station: {}'.format(df['Start Station'].mode()[0]))
 
     # display most commonly used end station
+    print('The Most Commonly Used End Station: {}'.format(df['End Station'].mode()[0]))
 
 
     # display most frequent combination of start station and end station trip
-
+    frequent_combination = (df['Start Station'] + " => " + df['End Station']).mode()[0] # to get the mode of the combination not the mode of each one
+    print("The Most Frequent Combination is: {}".format(frequent_combination))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -139,28 +146,33 @@ def trip_duration_stats(df):
     start_time = time.time()
 
     # display total travel time
-
+    print('Total Travil Time: {}'.format(df['Trip Duration'].sum()))
 
     # display mean travel time
-
-
+    print('Mean Travil Time: {}'.format(df['Trip Duration'].mean()))
+    
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
 
-def user_stats(df):
+def user_stats(df, city):
     """Displays statistics on bikeshare users."""
 
     print('\nCalculating User Stats...\n')
     start_time = time.time()
 
     # Display counts of user types
+    print('Counts Of User Types: {}'.format(df['User Type'].value_counts().to_string())) # to.string to remove name and dtype
 
+    # If Check Because Washington Don't Have Gender and Birth Year Columns
+    if city == 'chicago.csv' or city == 'new_york_city.csv':
+        # Display counts of gender
+        print('\nCounts Of Genders: {}'.format(df['Gender'].value_counts().to_string())) # to.string to remove name and dtype
 
-    # Display counts of gender
-
-
-    # Display earliest, most recent, and most common year of birth
+        # Display earliest, most recent, and most common year of birth
+        print('\nEarliest Year of Birth: {}'.format(int(df['Birth Year'].min()))) #int() to delete float point 
+        print('Most Recent Year of Birth: {}'.format(int(df['Birth Year'].max()))) #int() to delete float point 
+        print('Most Common Year of Birth: {}'.format(int(df['Birth Year'].mode()[0]))) #int() to delete float point 
 
 
     print("\nThis took %s seconds." % (time.time() - start_time))
@@ -175,7 +187,7 @@ def main():
         time_stats(df)
         station_stats(df)
         trip_duration_stats(df)
-        user_stats(df)
+        user_stats(df, city)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
