@@ -52,3 +52,8 @@ You will learn about bike share use in Chicago, New York City, and Washington by
 * counts of each user type
 * counts of each gender (only available for NYC and Chicago)
 * earliest, most recent, most common year of birth (only available for NYC and Chicago)
+
+### References Used
+#### 1- https://pandas.pydata.org/docs/reference/series.html
+#### 2- https://dataindependent.com/pandas/pandas-to-datetime-string-to-date-pd-to_datetime/
+#### 3- https://stackoverflow.com/questions/29645153/remove-name-dtype-from-pandas-output-of-dataframe-or-series
