@@ -5,7 +5,6 @@
 
 import time
 import pandas as pd
-import numpy as np
 
 CITY_DATA = { 'chicago': 'chicago.csv',
               'new york': 'new_york_city.csv',
@@ -132,7 +131,7 @@ def station_stats(df):
 
 
     # display most frequent combination of start station and end station trip
-    frequent_combination = (df['Start Station'] + " => " + df['End Station']).mode()[0] # to get the mode of the combination not the mode of each one
+    frequent_combination = (df['Start Station'] + " => " + df['End Station']).mode()[0] # to get the mode of the combination
     print("The Most Frequent Combination is: {}".format(frequent_combination))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
@@ -179,6 +178,20 @@ def user_stats(df, city):
     print('-'*40)
 
 
+def display_rows(df):
+    """Displays Raw Data If User Want."""
+    
+    print(df.head()) # to Display First 5 Rows
+    
+    next = 0
+    while True:
+        raw_data = input('\nWould You Want To See Next 5 Rows? Enter yes or no.\n')
+        if raw_data.lower() != 'yes':
+            return
+        next = next + 5
+        print(df.iloc[next:next+5]) # Display The Next 5 Rows
+        
+
 def main():
     while True:
         city, month, day = get_filters()
@@ -188,6 +201,13 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df, city)
+
+        while True:
+            raw_data = input('\nWould You Want To See First 5 Rows? Enter yes or no.\n')
+            if raw_data.lower() != 'yes':
+                break
+            display_rows(df)
+            break
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
